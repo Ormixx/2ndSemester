@@ -88,37 +88,5 @@ namespace LaboratoryWork1
                 }
             }
         }
-
-        // Алгоритм сортировки Шелла
-        public void ShellSort(out int comparisons, out int insertions)
-        {
-            comparisons = 0;
-            insertions = 0;
-            int h = 1;
-
-            while (h <= nElems / 3)
-            {
-                h = h * 3 + 1;
-            }
-
-            while (h > 0)
-            {
-                for (int outer = h; outer < nElems; outer++)
-                {
-                    long temp = array[outer];
-                    int inner = outer;
-                    while (inner > h - 1 && array[inner - h] >= temp)
-                    {
-                        comparisons++;
-                        array[inner] = array[inner - h];
-                        inner -= h;
-                        insertions++;
-                    }
-                    array[inner] = temp;
-                    insertions++;
-                }
-                h = (h - 1) / 3;
-            }
-        }
     }
 }

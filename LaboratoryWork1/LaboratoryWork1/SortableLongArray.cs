@@ -22,74 +22,95 @@ namespace LaboratoryWork1
             return false;
         }
 
-        public void BubbleSort(out int comparisons, out int insertions)
+        // Алгоритм сортировки Шелла с последовательностью Седжвика
+        public void SedgewickShellSort(out int comparisons, out int insertions)
         {
             comparisons = 0;
             insertions = 0;
-            for (int i = 0; i < nElems - 1; i++)
-            {
-                for (int j = 0; j < nElems - i - 1; j++)
-                {
-                    comparisons++;
-                    if (array[j] > array[j + 1])
-                    {
+            int[] gaps = { 1, 5, 19, 41, 109 }; // Примерные значения последовательности Седжвика
+            int gapIndex = gaps.Length - 1;
 
-                        long temp = array[j];
-                        array[j] = array[j + 1];
-                        array[j + 1] = temp;
+            while (gapIndex >= 0)
+            {
+                int h = gaps[gapIndex];
+                for (int outer = h; outer < nElems; outer++)
+                {
+                    long temp = array[outer];
+                    int inner = outer;
+                    while (inner >= h && array[inner - h] > temp)
+                    {
+                        comparisons++;
+                        array[inner] = array[inner - h];
+                        inner -= h;
                         insertions++;
                     }
-                }
-            }
-        }
-
-        public void InsertionSort(out int comparisons, out int insertions)
-        {
-            comparisons = 0;
-            insertions = 0;
-            for (int i = 1; i < nElems; i++)
-            {
-                long key = array[i];
-                int j = i - 1;
-                comparisons++;
-                while (j >= 0 && array[j] > key)
-                {
-                    comparisons++;
-                    array[j + 1] = array[j];
-                    j--;
+                    array[inner] = temp;
                     insertions++;
                 }
-                array[j + 1] = key;
-                insertions++;
+                gapIndex--;
             }
         }
 
-        public void SelectionSort(out int comparisons, out int insertions)
+        // Алгоритм сортировки Шелла с последовательностью Хиббарда
+        public void HibbardShellSort(out int comparisons, out int insertions)
         {
             comparisons = 0;
             insertions = 0;
-            for (int i = 0; i < nElems - 1; i++)
+            int h = 1;
+
+            while (h <= nElems / 2)
             {
-                int minIndex = i;
-                for (int j = i + 1; j < nElems; j++)
+                h = h * 2 + 1;
+            }
+
+            while (h > 0)
+            {
+                for (int outer = h; outer < nElems; outer++)
                 {
-                    comparisons++;
-                    if (array[j] < array[minIndex])
+                    long temp = array[outer];
+                    int inner = outer;
+                    while (inner >= h && array[inner - h] > temp)
                     {
-                        minIndex = j;
+                        comparisons++;
+                        array[inner] = array[inner - h];
+                        inner -= h;
+                        insertions++;
                     }
-                }
-                if (minIndex != i)
-                {
-                    long temp = array[i];
-                    array[i] = array[minIndex];
-                    array[minIndex] = temp;
+                    array[inner] = temp;
                     insertions++;
                 }
+                h = (h - 1) / 2;
             }
         }
 
-        // Алгоритм сортировки Шелла
+        // Алгоритм сортировки Шелла с простым делением на 2
+        public void SimpleDivShellSort(out int comparisons, out int insertions)
+        {
+            comparisons = 0;
+            insertions = 0;
+            int h = nElems / 2;
+
+            while (h > 0)
+            {
+                for (int outer = h; outer < nElems; outer++)
+                {
+                    long temp = array[outer];
+                    int inner = outer;
+                    while (inner >= h && array[inner - h] > temp)
+                    {
+                        comparisons++;
+                        array[inner] = array[inner - h];
+                        inner -= h;
+                        insertions++;
+                    }
+                    array[inner] = temp;
+                    insertions++;
+                }
+                h /= 2; 
+            }
+        }
+
+        // Алгоритм сортировки Шелла методом Кнута
         public void ShellSort(out int comparisons, out int insertions)
         {
             comparisons = 0;

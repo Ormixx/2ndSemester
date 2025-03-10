@@ -88,5 +88,18 @@ public class Program
         sortableArray.SelectionSort(out selectionComparisons, out selectionInsertions);
         stopwatch.Stop();
         Console.WriteLine("Selection Sort: Сравнения = " + selectionComparisons + ", Вставки = " + selectionInsertions + ",Время = " + stopwatch.ElapsedMilliseconds + " ms");
+
+        // Тестирование сортировки Шелла
+        sortableArray = new SortableLongArray(size);
+        for (int i = 0; i < size; i++)
+        {
+            sortableArray.Insert(random.Next(10000));
+        }
+
+        stopwatch.Restart();
+        int shellComparisons, shellInsertions;
+        sortableArray.ShellSort(out shellComparisons, out shellInsertions);
+        stopwatch.Stop();
+        Console.WriteLine("Shell Sort: Сравнения = " + shellComparisons + ", Вставки = " + shellInsertions + ", Время = " + stopwatch.ElapsedMilliseconds + " ms");
     }
 }

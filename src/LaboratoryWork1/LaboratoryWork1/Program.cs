@@ -87,7 +87,6 @@ public class Program
         int selectionComparisons, selectionInsertions;
         sortableArray.SelectionSort(out selectionComparisons, out selectionInsertions);
         stopwatch.Stop();
-        Console.WriteLine("Selection Sort: Сравнения = " + selectionComparisons + ", Вставки = " + selectionInsertions + ",Время = " + stopwatch.ElapsedMilliseconds + " ms");
-
+        Console.WriteLine("Selection Sort: Сравнения = " + selectionComparisons + ", Вставки = " + selectionInsertions + ",Время = " + stopwatch.ElapsedMilliseconds + " ms"); 
     }
 }

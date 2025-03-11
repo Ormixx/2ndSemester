@@ -27,27 +27,36 @@ namespace LaboratoryWork1
         {
             comparisons = 0;
             insertions = 0;
-            int[] gaps = { 1, 5, 19, 41, 109 }; // Примерные значения последовательности Седжвика
-            int gapIndex = gaps.Length - 1;
 
-            while (gapIndex >= 0)
+            List<int> gaps = new List<int>();
+            int k = 0;
+            int h;
+
+            do
             {
-                int h = gaps[gapIndex];
-                for (int outer = h; outer < nElems; outer++)
+                h = 9 * (int)Math.Pow(4, k) - 9 * (int)Math.Pow(2, k) + 1;
+                if (h > 0)
+                    gaps.Add(h);
+                k++;
+            } while (h <= nElems);
+
+            for (int gapIndex = gaps.Count - 1; gapIndex >= 0; gapIndex--)
+            {
+                int hValue = gaps[gapIndex];
+                for (int outer = hValue; outer < nElems; outer++)
                 {
                     long temp = array[outer];
                     int inner = outer;
-                    while (inner >= h && array[inner - h] > temp)
+                    while (inner >= hValue && array[inner - hValue] > temp)
                     {
                         comparisons++;
-                        array[inner] = array[inner - h];
-                        inner -= h;
+                        array[inner] = array[inner - hValue];
+                        inner -= hValue;
                         insertions++;
                     }
                     array[inner] = temp;
                     insertions++;
                 }
-                gapIndex--;
             }
         }
 

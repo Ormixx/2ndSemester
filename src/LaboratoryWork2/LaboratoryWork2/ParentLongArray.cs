@@ -89,6 +89,15 @@ namespace LaboratoryWork2
             return minValue;
         }
 
+        public long Get(int index)
+        {
+            if (index < 0 || index >= nElems)
+            {
+                throw new IndexOutOfRangeException("Индекс выходит за пределы массива.");
+            }
+            return array[index];
+        }
+
         public void Display()
         {
             for (int i = 0; i < nElems; i++)

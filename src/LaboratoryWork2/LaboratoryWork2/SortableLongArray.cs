@@ -22,71 +22,89 @@ namespace LaboratoryWork2
             return false;
         }
 
-        public void BubbleSort(out int comparisons, out int insertions)
+        public void QuickSort()
         {
-            comparisons = 0;
-            insertions = 0;
-            for (int i = 0; i < nElems - 1; i++)
-            {
-                for (int j = 0; j < nElems - i - 1; j++)
-                {
-                    comparisons++;
-                    if (array[j] > array[j + 1])
-                    {
+            Stack<(int left, int right)> stack = new Stack<(int, int)>();
+            stack.Push((0, nElems - 1));
 
-                        long temp = array[j];
-                        array[j] = array[j + 1];
-                        array[j + 1] = temp;
-                        insertions++;
-                    }
+            while (stack.Count > 0)
+            {
+                var (left, right) = stack.Pop();
+                if (right - left + 1 <= 3)
+                {
+                    ManualSort(left, right);
+                }
+                else
+                {
+                    long pivot = MedianOfThreePoints(left, right);
+                    int partitionIndex = Partition(left, right, pivot);
+
+                    stack.Push((left, partitionIndex - 1));
+                    stack.Push((partitionIndex + 1, right));
                 }
             }
         }
 
-        public void InsertionSort(out int comparisons, out int insertions)
+        private long MedianOfThreePoints(int leftIndex, int rightIndex)
         {
-            comparisons = 0;
-            insertions = 0;
-            for (int i = 1; i < nElems; i++)
+            int center = (leftIndex + rightIndex) / 2;
+
+            if (array[leftIndex] > array[center])
+                Swap(leftIndex, center);
+            if (array[leftIndex] > array[rightIndex])
+                Swap(leftIndex, rightIndex);
+            if (array[center] > array[rightIndex])
+                Swap(center, rightIndex);
+
+            Swap(center, rightIndex - 1);
+            return array[rightIndex - 1];
+        }
+
+        private void ManualSort(int leftIndex, int rightIndex)
+        {
+            int size = rightIndex - leftIndex + 1;
+            if (size <= 1) return;
+
+            if (size == 2)
             {
-                long key = array[i];
-                int j = i - 1;
-                comparisons++;
-                while (j >= 0 && array[j] > key)
-                {
-                    comparisons++;
-                    array[j + 1] = array[j];
-                    j--;
-                    insertions++;
-                }
-                array[j + 1] = key;
-                insertions++;
+                if (array[leftIndex] > array[rightIndex])
+                    Swap(leftIndex, rightIndex);
+            }
+            else
+            {
+                if (array[leftIndex] > array[rightIndex - 1])
+                    Swap(leftIndex, rightIndex - 1);
+                if (array[leftIndex] > array[rightIndex])
+                    Swap(leftIndex, rightIndex);
+                if (array[rightIndex - 1] > array[rightIndex])
+                    Swap(rightIndex - 1, rightIndex);
             }
         }
 
-        public void SelectionSort(out int comparisons, out int insertions)
+        private int Partition(int leftIndex, int rightIndex, long pivot)
         {
-            comparisons = 0;
-            insertions = 0;
-            for (int i = 0; i < nElems - 1; i++)
+            int leftPtr = leftIndex;
+            int rightPtr = rightIndex - 1;
+
+            while (true)
             {
-                int minIndex = i;
-                for (int j = i + 1; j < nElems; j++)
-                {
-                    comparisons++;
-                    if (array[j] < array[minIndex])
-                    {
-                        minIndex = j;
-                    }
-                }
-                if (minIndex != i)
-                {
-                    long temp = array[i];
-                    array[i] = array[minIndex];
-                    array[minIndex] = temp;
-                    insertions++;
-                }
+                do { leftPtr++; } while (array[leftPtr] < pivot);
+                do { rightPtr--; } while (array[rightPtr] > pivot);
+
+                if (leftPtr >= rightPtr)
+                    break;
+
+                Swap(leftPtr, rightPtr);
             }
+            Swap(leftPtr, rightIndex - 1);
+            return leftPtr;
+        }
+
+        private void Swap(int index1, int index2)
+        {
+            long temp = array[index1];
+            array[index1] = array[index2];
+            array[index2] = temp;
         }
     }
 }

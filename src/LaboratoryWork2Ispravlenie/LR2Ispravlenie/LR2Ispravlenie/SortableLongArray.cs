@@ -150,5 +150,50 @@ namespace LR2Ispravlenie
                 h = (h - 1) / 3;
             }
         }
+
+        // Алгоритм быстрой сортировки
+        public void QuickSort(out int comparisons, out int insertions)
+        {
+            comparisons = 0;
+            insertions = 0;
+            QuickSortHelper(0, nElems - 1, ref comparisons, ref insertions);
+        }
+
+        private void QuickSortHelper(int left, int right, ref int comparisons, ref int insertions)
+        {
+            if (left < right)
+            {
+                int pivotIndex = Partition(left, right, ref comparisons, ref insertions);
+                QuickSortHelper(left, pivotIndex - 1, ref comparisons, ref insertions);
+                QuickSortHelper(pivotIndex + 1, right, ref comparisons, ref insertions);
+            }
+        }
+
+        private int Partition(int left, int right, ref int comparisons, ref int insertions)
+        {
+            long pivot = array[right];
+            int i = left - 1;
+
+            for (int j = left; j < right; j++)
+            {
+                comparisons++;
+                if (array[j] <= pivot)
+                {
+                    i++;
+                    Swap(i, j);
+                    insertions++;
+                }
+            }
+            Swap(i + 1, right);
+            insertions++;
+            return i + 1;
+        }
+
+        private void Swap(int index1, int index2)
+        {
+            long temp = array[index1];
+            array[index1] = array[index2];
+            array[index2] = temp;
+        }
     }
 }

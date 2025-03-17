@@ -12,7 +12,6 @@ public class Program
         CommonArray commonArray = new CommonArray(size);
         OrderedArray orderedArray = new OrderedArray(size);
 
-
         for (int i = 0; i < 50000; i++)
         {
             commonArray.Insert(random.Next(50000));
@@ -44,6 +43,22 @@ public class Program
         Console.WriteLine("Максимальное значение массива: " + orderedArray.GetMax());
         Console.WriteLine("Минимальное значение массива: " + orderedArray.GetMin());
 
+        // Инициализация Stopwatch
+        Stopwatch stopwatch = new Stopwatch();
+
+        // Тестирование быстрой сортировки
+        sortableArray = new SortableLongArray(size);
+        for (int i = 0; i < 50000; i++)
+        {
+            sortableArray.Insert(random.Next(50000));
+        }
+
+        stopwatch.Restart();
+        int quickComparisons, quickInsertions;
+        sortableArray.QuickSort(out quickComparisons, out quickInsertions);
+        stopwatch.Stop();
+        Console.WriteLine("Quick Sort: Сравнения = " + quickComparisons + ", Вставки = " + quickInsertions + ", Время = " + stopwatch.ElapsedMilliseconds + " ms");
+
         // Тестирование сортировки Шелла с последовательностью Хиббарда
         sortableArray = new SortableLongArray(size);
         for (int i = 0; i < 50000; i++)
@@ -51,7 +66,7 @@ public class Program
             sortableArray.Insert(random.Next(50000));
         }
 
-        Stopwatch stopwatch = Stopwatch.StartNew();
+        stopwatch.Restart();
         int hibbardComparisons, hibbardInsertions;
         sortableArray.HibbardShellSort(out hibbardComparisons, out hibbardInsertions);
         stopwatch.Stop();

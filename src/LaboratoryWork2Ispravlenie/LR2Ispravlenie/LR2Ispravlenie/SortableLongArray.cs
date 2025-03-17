@@ -22,7 +22,7 @@ namespace LR2Ispravlenie
             return false;
         }
 
-        // Алгоритм быстрой сортировки
+        // с рекурсией
         public void QuickSort(out int comparisons, out int insertions)
         {
             comparisons = 0;
@@ -32,32 +32,77 @@ namespace LR2Ispravlenie
 
         private void QuickSortHelper(int left, int right, ref int comparisons, ref int insertions)
         {
-            if (left < right)
+            if (right - left + 1 <= 3)
             {
-                int pivotIndex = Partition(left, right, ref comparisons, ref insertions);
+                InsertionSort(left, right, ref insertions);
+            }
+            else
+            {
+                long pivot = MedianOfThreePoints(left, right);
+                int pivotIndex = Partition(left, right, pivot, ref comparisons, ref insertions);
                 QuickSortHelper(left, pivotIndex - 1, ref comparisons, ref insertions);
                 QuickSortHelper(pivotIndex + 1, right, ref comparisons, ref insertions);
             }
         }
 
-        private int Partition(int left, int right, ref int comparisons, ref int insertions)
+        // без рекурсии
+        public void QuickSortNonRecursive(out int comparisons, out int insertions)
         {
-            long pivot = array[right];
-            int i = left - 1;
+            comparisons = 0;
+            insertions = 0;
+            QuickSortNonRecursiveHelper(0, nElems - 1, ref comparisons, ref insertions);
+        }
 
-            for (int j = left; j < right; j++)
+        private void QuickSortNonRecursiveHelper(int left, int right, ref int comparisons, ref int insertions)
+        {
+            Stack<(int left, int right)> stack = new Stack<(int, int)>();
+            stack.Push((left, right));
+
+            while (stack.Count > 0)
             {
-                comparisons++;
-                if (array[j] <= pivot)
+                var (currentLeft, currentRight) = stack.Pop();
+                if (currentRight - currentLeft + 1 <= 3)
                 {
-                    i++;
-                    Swap(i, j);
-                    insertions++;
+                    InsertionSort(currentLeft, currentRight, ref insertions);
+                }
+                else
+                {
+                    long pivot = MedianOfThreePoints(currentLeft, currentRight);
+                    int pivotIndex = Partition(currentLeft, currentRight, pivot, ref comparisons, ref insertions);
+                    if (pivotIndex - 1 > currentLeft)
+                        stack.Push((currentLeft, pivotIndex - 1));
+                    if (pivotIndex + 1 < currentRight)
+                        stack.Push((pivotIndex + 1, currentRight));
                 }
             }
-            Swap(i + 1, right);
+        }
+
+        private long MedianOfThreePoints(int left, int right)
+        {
+            int center = (left + right) / 2;
+            if (array[left] > array[center]) Swap(left, center);
+            if (array[left] > array[right]) Swap(left, right);
+            if (array[center] > array[right]) Swap(center, right);
+            Swap(center, right - 1);
+            return array[right - 1];
+        }
+
+        private int Partition(int left, int right, long pivot, ref int comparisons, ref int insertions)
+        {
+            int leftPtr = left;
+            int rightPtr = right - 1;
+
+            while (true)
+            {
+                do { leftPtr++; } while (array[leftPtr] < pivot);
+                do { rightPtr--; } while (array[rightPtr] > pivot);
+
+                if (leftPtr >= rightPtr) break;
+                else Swap(leftPtr, rightPtr);
+            }
+            Swap(leftPtr, right - 1);
             insertions++;
-            return i + 1;
+            return leftPtr;
         }
 
         private void InsertionSort(int left, int right, ref int insertions)
@@ -77,7 +122,6 @@ namespace LR2Ispravlenie
                 insertions++;
             }
         }
-
 
         private void Swap(int index1, int index2)
         {

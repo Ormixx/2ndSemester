@@ -21,9 +21,142 @@ namespace LaboratoryWork3
             }
             return false;
         }
+        // Быстрая сортировка
+        public void QuickSort(out int comparisons, out int insertions)
+        {
+            comparisons = 0;
+            insertions = 0;
+            QuickSortHelper(0, nElems - 1, ref comparisons, ref insertions);
+        }
 
-        // Алгоритм сортировки Шелла с последовательностью Седжвика
-        public void SedgewickShellSort(out int comparisons, out int insertions)
+        private void QuickSortHelper(int left, int right, ref int comparisons, ref int insertions)
+        {
+            if (right - left + 1 <= 3)
+            {
+                InsertionSort(left, right, ref insertions);
+            }
+            else
+            {
+                long pivot = MedianOfThreePoints(left, right);
+                int pivotIndex = Partition(left, right, pivot, ref comparisons, ref insertions);
+                QuickSortHelper(left, pivotIndex - 1, ref comparisons, ref insertions);
+                QuickSortHelper(pivotIndex + 1, right, ref comparisons, ref insertions);
+            }
+        }
+
+        private long MedianOfThreePoints(int left, int right)
+        {
+            int center = (left + right) / 2;
+            if (array[left] > array[center]) Swap(left, center);
+            if (array[left] > array[right]) Swap(left, right);
+            if (array[center] > array[right]) Swap(center, right);
+            Swap(center, right - 1);
+            return array[right - 1];
+        }
+
+        private int Partition(int left, int right, long pivot, ref int comparisons, ref int insertions)
+        {
+            int leftPtr = left;
+            int rightPtr = right - 1;
+
+            while (true)
+            {
+                do { leftPtr++; } while (array[leftPtr] < pivot);
+                do { rightPtr--; } while (array[rightPtr] > pivot);
+
+                if (leftPtr >= rightPtr) break;
+                else Swap(leftPtr, rightPtr);
+            }
+            Swap(leftPtr, right - 1);
+            insertions++;
+            return leftPtr;
+        }
+
+        private void InsertionSort(int left, int right, ref int insertions)
+        {
+            for (int i = left + 1; i <= right; i++)
+            {
+                long key = array[i];
+                int j = i - 1;
+
+                while (j >= left && array[j] > key)
+                {
+                    array[j + 1] = array[j];
+                    j--;
+                    insertions++;
+                }
+                array[j + 1] = key;
+                insertions++;
+            }
+        }
+
+        private void Swap(int index1, int index2)
+        {
+            long temp = array[index1];
+            array[index1] = array[index2];
+            array[index2] = temp;
+        }
+
+        // Сортировка слиянием
+        public void MergeSort(out int comparisons, out int insertions)
+        {
+            comparisons = 0;
+            insertions = 0;
+            long[] tempArray = new long[nElems];
+            MergeSort(tempArray, 0, nElems - 1, ref comparisons, ref insertions);
+        }
+
+        private void MergeSort(long[] tempArray, int left, int right, ref int comparisons, ref int insertions)
+        {
+            if (left < right)
+            {
+                int middle = (left + right) / 2;
+
+                MergeSort(tempArray, left, middle, ref comparisons, ref insertions);
+                MergeSort(tempArray, middle + 1, right, ref comparisons, ref insertions);
+                Merge(tempArray, left, middle, right, ref comparisons, ref insertions);
+            }
+        }
+
+        private void Merge(long[] tempArray, int left, int middle, int right, ref int comparisons, ref int insertions)
+        {
+            int i = left;
+            int j = middle + 1;
+            int k = left;
+
+            while (i <= middle && j <= right)
+            {
+                comparisons++;
+                if (array[i] <= array[j])
+                {
+                    tempArray[k++] = array[i++];
+                }
+                else
+                {
+                    tempArray[k++] = array[j++];
+                }
+            }
+
+            while (i <= middle)
+            {
+                tempArray[k++] = array[i++];
+                insertions++;
+            }
+
+            while (j <= right)
+            {
+                tempArray[k++] = array[j++];
+                insertions++;
+            }
+
+            for (i = left; i <= right; i++)
+            {
+                array[i] = tempArray[i];
+            }
+        }
+
+        // Сортировки Шелла
+        public void ShellSort(out int comparisons, out int insertions)
         {
             comparisons = 0;
             insertions = 0;
@@ -58,97 +191,6 @@ namespace LaboratoryWork3
                     insertions++;
                 }
             }
-        }
-
-        // Алгоритм сортировки Шелла с последовательностью Хиббарда
-        public void HibbardShellSort(out int comparisons, out int insertions)
-        {
-            comparisons = 0;
-            insertions = 0;
-            int h = 1;
-
-            while (h <= nElems / 2)
-            {
-                h = h * 2 + 1;
-            }
-
-            while (h > 0)
-            {
-                for (int outer = h; outer < nElems; outer++)
-                {
-                    long temp = array[outer];
-                    int inner = outer;
-                    while (inner >= h && array[inner - h] > temp)
-                    {
-                        comparisons++;
-                        array[inner] = array[inner - h];
-                        inner -= h;
-                        insertions++;
-                    }
-                    array[inner] = temp;
-                    insertions++;
-                }
-                h = (h - 1) / 2;
-            }
-        }
-
-        // Алгоритм сортировки Шелла с простым делением на 2
-        public void SimpleDivShellSort(out int comparisons, out int insertions)
-        {
-            comparisons = 0;
-            insertions = 0;
-            int h = nElems / 2;
-
-            while (h > 0)
-            {
-                for (int outer = h; outer < nElems; outer++)
-                {
-                    long temp = array[outer];
-                    int inner = outer;
-                    while (inner >= h && array[inner - h] > temp)
-                    {
-                        comparisons++;
-                        array[inner] = array[inner - h];
-                        inner -= h;
-                        insertions++;
-                    }
-                    array[inner] = temp;
-                    insertions++;
-                }
-                h /= 2;
-            }
-        }
-
-        // Алгоритм сортировки Шелла методом Кнута
-        public void ShellSort(out int comparisons, out int insertions)
-        {
-            comparisons = 0;
-            insertions = 0;
-            int h = 1;
-
-            while (h <= nElems / 3)
-            {
-                h = h * 3 + 1;
-            }
-
-            while (h > 0)
-            {
-                for (int outer = h; outer < nElems; outer++)
-                {
-                    long temp = array[outer];
-                    int inner = outer;
-                    while (inner > h - 1 && array[inner - h] >= temp)
-                    {
-                        comparisons++;
-                        array[inner] = array[inner - h];
-                        inner -= h;
-                        insertions++;
-                    }
-                    array[inner] = temp;
-                    insertions++;
-                }
-                h = (h - 1) / 3;
-            }
-        }
+        } 
     }
 }

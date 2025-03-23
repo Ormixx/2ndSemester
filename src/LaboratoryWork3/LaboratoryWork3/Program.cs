@@ -13,98 +13,42 @@ public class Program
         OrderedArray orderedArray = new OrderedArray(size);
 
 
-        for (int i = 0; i < 50000; i++)
+        for (int i = 0; i < size; i++)
         {
-            commonArray.Insert(random.Next(50000));
-            orderedArray.Insert(random.Next(50000));
+            sortableArray.Insert(random.Next(50000));
         }
 
-        long searchValue = random.Next(50000);
+        var stopwatch = Stopwatch.StartNew();
+        sortableArray.MergeSort(out int mergeComparisons, out int mergeInsertions);
+        stopwatch.Stop();
+        Console.WriteLine($"Merge Sort: Сравнения = {mergeComparisons}, Вставки = {mergeInsertions}, Время = {stopwatch.ElapsedMilliseconds} ms");
 
-        if (commonArray.Contains(searchValue))
+        sortableArray = new SortableLongArray(size);
+        for (int i = 0; i < size; i++)
         {
-            Console.WriteLine("Значение было найдено. " + searchValue);
+            sortableArray.Insert(random.Next(50000));
         }
-        else
+
+        stopwatch.Restart();
+        sortableArray.QuickSort(out int quickComparisons, out int quickInsertions);
+        stopwatch.Stop();
+        Console.WriteLine($"Quick Sort: Сравнения = {quickComparisons}, Вставки = {quickInsertions}, Время = {stopwatch.ElapsedMilliseconds} ms");
+
+        sortableArray = new SortableLongArray(size);
+        for (int i = 0; i < size; i++)
         {
-            Console.WriteLine("Не удалось найти значение. " + searchValue);
+            sortableArray.Insert(random.Next(50000));
         }
+
+        stopwatch.Restart();
+        sortableArray.ShellSort(out int shellComparisons, out int shellInsertions);
+        stopwatch.Stop();
+        Console.WriteLine($"Shell Sort: Сравнения = {shellComparisons}, Вставки = {shellInsertions}, Время = {stopwatch.ElapsedMilliseconds} ms");
 
         Console.WriteLine(separator);
-
-        if (orderedArray.Contains(searchValue))
-        {
-            Console.WriteLine("Значение было найдено. " + searchValue);
-        }
-        else
-        {
-            Console.WriteLine("Не удалось найти значение. " + searchValue);
-        }
-
-        Console.WriteLine("Максимальное значение массива: " + orderedArray.GetMax());
-        Console.WriteLine("Минимальное значение массива: " + orderedArray.GetMin());
-
-        // Тестирование сортировки Шелла с последовательностью Хиббарда
-        sortableArray = new SortableLongArray(size);
-        for (int i = 0; i < 50000; i++)
-        {
-            sortableArray.Insert(random.Next(50000));
-        }
-
-        Stopwatch stopwatch = Stopwatch.StartNew();
-        int hibbardComparisons, hibbardInsertions;
-        sortableArray.HibbardShellSort(out hibbardComparisons, out hibbardInsertions);
-        stopwatch.Stop();
-        Console.WriteLine("Hibbard Shell Sort: Сравнения = " + hibbardComparisons + ", Вставки = " + hibbardInsertions + ", Время = " + stopwatch.ElapsedMilliseconds + " ms");
-
-        // Тестирование сортировки Шелла с последовательностью Седжвика
-        sortableArray = new SortableLongArray(size);
-        for (int i = 0; i < 50000; i++)
-        {
-            sortableArray.Insert(random.Next(50000));
-        }
-
-        stopwatch.Restart();
-        int sedgewickComparisons, sedgewickInsertions;
-        sortableArray.SedgewickShellSort(out sedgewickComparisons, out sedgewickInsertions);
-        stopwatch.Stop();
-        Console.WriteLine("Sedgewick Shell Sort: Сравнения = " + sedgewickComparisons + ", Вставки = " + sedgewickInsertions + ", Время = " + stopwatch.ElapsedMilliseconds + " ms");
-
-        // Тестирование сортировки Шелла с простым делением на 2
-        sortableArray = new SortableLongArray(size);
-        for (int i = 0; i < 50000; i++)
-        {
-            sortableArray.Insert(random.Next(50000));
-        }
-
-        stopwatch.Restart();
-        int simpleDivComparisons, simpleDivInsertions;
-        sortableArray.SimpleDivShellSort(out simpleDivComparisons, out simpleDivInsertions);
-        stopwatch.Stop();
-        Console.WriteLine("Simple Div Shell Sort: Сравнения = " + simpleDivComparisons + ", Вставки = " + simpleDivInsertions + ", Время = " + stopwatch.ElapsedMilliseconds + " ms");
-
-        // Тестирование сортировки Шелла
-        sortableArray = new SortableLongArray(size);
-        for (int i = 0; i < 50000; i++)
-        {
-            sortableArray.Insert(random.Next(50000));
-        }
-
-        stopwatch.Restart();
-        int shellComparisons, shellInsertions;
-        sortableArray.ShellSort(out shellComparisons, out shellInsertions);
-        stopwatch.Stop();
-        Console.WriteLine("Shell Sort: Сравнения = " + shellComparisons + ", Вставки = " + shellInsertions + ", Время = " + stopwatch.ElapsedMilliseconds + " ms");
-
-        // Вывод результатов сортировки
-        Console.WriteLine(separator);
-        Console.WriteLine("Сортировка завершена.");
-        Console.WriteLine("Общее количество вставок в массив: 50000");
-        Console.WriteLine("Результаты сортировок:");
-
-        Console.WriteLine($"Hibbard Shell Sort: {hibbardComparisons} сравнений, {hibbardInsertions} вставок.");
-        Console.WriteLine($"Sedgewick Shell Sort: {sedgewickComparisons} сравнений, {sedgewickInsertions} вставок.");
-        Console.WriteLine($"Simple Div Shell Sort: {simpleDivComparisons} сравнений, {simpleDivInsertions} вставок.");
+        Console.WriteLine("Сравнение результатов сортировки:");
+        Console.WriteLine($"Merge Sort: {mergeComparisons} сравнений, {mergeInsertions} вставок.");
+        Console.WriteLine($"Quick Sort: {quickComparisons} сравнений, {quickInsertions} вставок.");
         Console.WriteLine($"Shell Sort: {shellComparisons} сравнений, {shellInsertions} вставок.");
     }
 }

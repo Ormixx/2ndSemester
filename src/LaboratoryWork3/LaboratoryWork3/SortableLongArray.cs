@@ -61,11 +61,21 @@ namespace LaboratoryWork3
 
             while (true)
             {
-                do { leftPtr++; } while (array[leftPtr] < pivot);
-                do { rightPtr--; } while (array[rightPtr] > pivot);
+                while (leftPtr <= rightPtr && array[leftPtr] < pivot)
+                {
+                    leftPtr++;
+                    comparisons++;
+                }
+
+                while (leftPtr <= rightPtr && array[rightPtr] > pivot)
+                {
+                    rightPtr--;
+                    comparisons++;
+                }
 
                 if (leftPtr >= rightPtr) break;
-                else Swap(leftPtr, rightPtr);
+
+                Swap(leftPtr, rightPtr);
             }
             Swap(leftPtr, right - 1);
             insertions++;

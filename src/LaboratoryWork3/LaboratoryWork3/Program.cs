@@ -9,9 +9,6 @@ public class Program
         Random random = new Random();
         int size = 100000;
         SortableLongArray sortableArray = new SortableLongArray(size);
-        CommonArray commonArray = new CommonArray(size);
-        OrderedArray orderedArray = new OrderedArray(size);
-
 
         for (int i = 0; i < size; i++)
         {

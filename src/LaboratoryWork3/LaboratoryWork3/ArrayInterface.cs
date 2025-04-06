@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LaboratoryWork1
+namespace LaboratoryWork3
 {
     public interface ArrayInterface
     {

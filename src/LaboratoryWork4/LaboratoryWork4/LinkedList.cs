@@ -79,5 +79,10 @@ namespace LaboratoryWork4
             }
             System.Console.WriteLine();
         }
+
+        public Link GetFirstLink()
+        {
+            return first;
+        }
     }
 }

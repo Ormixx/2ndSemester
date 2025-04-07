@@ -6,11 +6,11 @@ public class Program
     {
         HashTable hashTable = new HashTable(10);
 
-        hashTable.Insert(new Item(1));
-        hashTable.Insert(new Item(2));
-        hashTable.Insert(new Item(3));
-        hashTable.Insert(new Item(12));
-        hashTable.Insert(new Item(22));
+        for (int i = 1; i <= 20; i++)
+        {
+            hashTable.Insert(new Item(i));
+            System.Console.WriteLine($"Вставлен элемент с ключом {i}");
+        }
 
         System.Console.WriteLine("Содержимое хеш-таблицы:");
         hashTable.DisplayHashTable();

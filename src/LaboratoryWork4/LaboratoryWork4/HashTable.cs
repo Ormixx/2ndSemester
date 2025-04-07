@@ -11,7 +11,6 @@ namespace LaboratoryWork4
         private LinkedList[] hashArray;
         private int arraySize;
         private int currentSize;
-        private const int LOAD_FACTOR = 2;
 
         public HashTable(int size)
         {
@@ -29,8 +28,35 @@ namespace LaboratoryWork4
             return key % arraySize;
         }
 
+        private void Resize()
+        {
+            int newSize = arraySize * 2;
+            LinkedList[] newHashArray = new LinkedList[newSize];
+            for (int i = 0; i < newSize; i++)
+            {
+                newHashArray[i] = new LinkedList();
+            }
+
+            for (int i = 0; i < arraySize; i++)
+            {
+                Link current = hashArray[i].GetFirstLink();
+                while (current != null)
+                {
+                    int newHashVal = current.GetKey() % newSize;
+                    newHashArray[newHashVal].Insert(new Link(current.GetKey()));
+                    current = current.GetNext();
+                }
+            }
+            hashArray = newHashArray;
+            arraySize = newSize;
+        }
+
         public void Insert(Item item)
         {
+            if (currentSize >= arraySize)
+            {
+                Resize();
+            }
             int hashVal = HashFunc(item.Key);
             hashArray[hashVal].Insert(new Link(item.Key));
             currentSize++;

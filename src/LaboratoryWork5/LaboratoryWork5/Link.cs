@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LaboratoryWork4
+namespace LaboratoryWork5
 {
     public class Link
     {

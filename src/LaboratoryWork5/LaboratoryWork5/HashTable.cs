@@ -28,6 +28,11 @@ namespace LaboratoryWork5
             return key % arraySize;
         }
 
+        private int QuadraticProbe(int hashVal, int attempt)
+        {
+            return (hashVal + attempt * attempt) % arraySize;
+        }
+
         private void Resize()
         {
             int newSize = arraySize * 2;
@@ -53,31 +58,59 @@ namespace LaboratoryWork5
 
         public void Insert(Item item)
         {
-            if (currentSize >= arraySize)
+            if (currentSize >= arraySize * 0.75)
             {
                 Resize();
             }
             int hashVal = HashFunc(item.Key);
-            hashArray[hashVal].Insert(new Link(item.Key));
-            currentSize++;
+            for (int attempt = 0; attempt < arraySize; attempt++)
+            {
+                int probeIndex = QuadraticProbe(hashVal, attempt);
+                if (hashArray[probeIndex].GetFirstLink() == null)
+                {
+                    hashArray[probeIndex].Insert(new Link(item.Key));
+                    currentSize++;
+                    return;
+                }
+            }
         }
 
         public Item Find(int key)
         {
             int hashVal = HashFunc(key);
-            Link foundLink = hashArray[hashVal].Find(key);
-            return foundLink != null ? new Item(foundLink.GetKey()) : null;
+            for (int attempt = 0; attempt < arraySize; attempt++)
+            {
+                int probeIndex = QuadraticProbe(hashVal, attempt);
+                Link foundLink = hashArray[probeIndex].Find(key);
+                if (foundLink != null)
+                {
+                    return new Item(foundLink.GetKey());
+                }
+                if (hashArray[probeIndex].GetFirstLink() == null)
+                {
+                    break;
+                }
+            }
+            return null;
         }
 
         public Item Delete(int key)
         {
             int hashVal = HashFunc(key);
-            Link foundLink = hashArray[hashVal].Find(key);
-            if (foundLink != null)
+            for (int attempt = 0; attempt < arraySize; attempt++)
             {
-                hashArray[hashVal].Delete(key);
-                currentSize--;
-                return new Item(foundLink.GetKey());
+                int probeIndex = QuadraticProbe(hashVal, attempt);
+                Link foundLink = hashArray[probeIndex].Find(key);
+                if (foundLink != null)
+                {
+                    hashArray[probeIndex].Delete(key);
+                    currentSize--;
+                    return new Item(foundLink.GetKey());
+                }
+                if (hashArray[probeIndex].GetFirstLink() == null)
+                {
+                    break;
+                }
             }
             return null;
         }

@@ -8,18 +8,14 @@ namespace LaboratoryWork5
 {
     public class HashTable
     {
-        private LinkedList[] hashArray;
+        private Item[] hashArray;
         private int arraySize;
         private int currentSize;
 
         public HashTable(int size)
         {
             this.arraySize = size;
-            this.hashArray = new LinkedList[arraySize];
-            for (int i = 0; i < arraySize; i++)
-            {
-                hashArray[i] = new LinkedList();
-            }
+            this.hashArray = new Item[arraySize];
             this.currentSize = 0;
         }
 
@@ -36,24 +32,19 @@ namespace LaboratoryWork5
         private void Resize()
         {
             int newSize = arraySize * 2;
-            LinkedList[] newHashArray = new LinkedList[newSize];
-            for (int i = 0; i < newSize; i++)
-            {
-                newHashArray[i] = new LinkedList();
-            }
-
-            for (int i = 0; i < arraySize; i++)
-            {
-                Link current = hashArray[i].GetFirstLink();
-                while (current != null)
-                {
-                    int newHashVal = current.GetKey() % newSize;
-                    newHashArray[newHashVal].Insert(new Link(current.GetKey()));
-                    current = current.GetNext();
-                }
-            }
+            Item[] newHashArray = new Item[newSize];
+            Item[] oldHashArray = hashArray;
             hashArray = newHashArray;
             arraySize = newSize;
+            currentSize = 0;
+
+            foreach (var item in oldHashArray)
+            {
+                if (item != null)
+                {
+                    Insert(item);
+                }
+            }
         }
 
         public void Insert(Item item)
@@ -62,13 +53,14 @@ namespace LaboratoryWork5
             {
                 Resize();
             }
+
             int hashVal = HashFunc(item.Key);
             for (int attempt = 0; attempt < arraySize; attempt++)
             {
                 int probeIndex = QuadraticProbe(hashVal, attempt);
-                if (hashArray[probeIndex].GetFirstLink() == null)
+                if (hashArray[probeIndex] == null)
                 {
-                    hashArray[probeIndex].Insert(new Link(item.Key));
+                    hashArray[probeIndex] = item;
                     currentSize++;
                     return;
                 }
@@ -81,14 +73,13 @@ namespace LaboratoryWork5
             for (int attempt = 0; attempt < arraySize; attempt++)
             {
                 int probeIndex = QuadraticProbe(hashVal, attempt);
-                Link foundLink = hashArray[probeIndex].Find(key);
-                if (foundLink != null)
-                {
-                    return new Item(foundLink.GetKey());
-                }
-                if (hashArray[probeIndex].GetFirstLink() == null)
+                if (hashArray[probeIndex] == null)
                 {
                     break;
+                }
+                if (hashArray[probeIndex].Key == key)
+                {
+                    return hashArray[probeIndex];
                 }
             }
             return null;
@@ -100,16 +91,16 @@ namespace LaboratoryWork5
             for (int attempt = 0; attempt < arraySize; attempt++)
             {
                 int probeIndex = QuadraticProbe(hashVal, attempt);
-                Link foundLink = hashArray[probeIndex].Find(key);
-                if (foundLink != null)
-                {
-                    hashArray[probeIndex].Delete(key);
-                    currentSize--;
-                    return new Item(foundLink.GetKey());
-                }
-                if (hashArray[probeIndex].GetFirstLink() == null)
+                if (hashArray[probeIndex] == null)
                 {
                     break;
+                }
+                if (hashArray[probeIndex].Key == key)
+                {
+                    Item deletedItem = hashArray[probeIndex];
+                    hashArray[probeIndex] = null;
+                    currentSize--;
+                    return deletedItem;
                 }
             }
             return null;
@@ -119,8 +110,15 @@ namespace LaboratoryWork5
         {
             for (int i = 0; i < arraySize; i++)
             {
-                System.Console.Write($"Hash Index {i}: ");
-                hashArray[i].DisplayList();
+                if (hashArray[i] != null)
+                {
+                    System.Console.Write($"Hash Index {i}: {hashArray[i].Key}");
+                }
+                else
+                {
+                    System.Console.Write($"Hash Index {i}: null");
+                }
+                System.Console.WriteLine();
             }
         }
     }

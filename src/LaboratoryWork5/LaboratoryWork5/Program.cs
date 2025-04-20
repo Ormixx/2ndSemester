@@ -1,4 +1,4 @@
-﻿using LaboratoryWork4;
+﻿using LaboratoryWork5;
 
 public class Program
 {
